@@ -1,7 +1,6 @@
 {
   "dependencies": {
-    "currency-converter-lt": "^2.0.0",
-    "type": "module"
+    "axios": "^1.4.0",
+    "currency-converter-lt": "^2.0.0"
   }
-  
 }

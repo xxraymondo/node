@@ -1,5 +1,7 @@
 const { Console } = require('console');
 const http= require("http");
+const url = require('url');
+const axios =require('axios')
 const _fetch = (url) => fetch(url).then(res => res.json())
 
 const groupWithCategories=(products)=>{
@@ -50,13 +52,14 @@ const categorizedProducts=async()=>{
 todos=[]
 const requestListener =(req,res)=>{
     const _fetch = (url) => fetch(url).then(res => res.json())
-
+console.log('r')
     const method=req.method
     const route= req.url
     if(method==="GET"&&route==="/"){
     res.setHeader("content-Type","application-json")
     res.writeHead(200)
     res.write(JSON.stringify(todos))
+    console.log('r')
     }
     if(method==="POST"&&route==="/"){
         body=[]
@@ -71,29 +74,21 @@ const requestListener =(req,res)=>{
     }
 
 
-
-    // const server = http.createServer(requestListener)
-    // //listen to client requests 
-    // server.listen(3030,"localhost",()=>{
-    //     console.log("server is up and runinng")
-    // })
-
-
     const server = http.createServer(async (req, res) => {
-        const { pathname, query } = url.parse(req.url, true);
+        const { pathname } = url.parse(req.url, true);
         if (pathname === '/products' && req.method === 'POST') {
-          let body = '';
-          req.on('data', (chunk) => {
-            body += chunk;
-          });
-      
-          req.on('end', async () => {
+            let body = [];
+            req.on('data', (chunk) => {
+              body.push(chunk);
+            });
+            req.on('end', async () => {
             const newProduct = JSON.parse(body);
             try {
-              // Validate the new product here...
-      
+              // Validate the new product here...   
               const response = await axios.post('https://api.escuelajs.co/api/v1/products/', newProduct);
+
               const createdProduct = response.data;
+              console.log(createdProduct)
               res.writeHead(200, { 'Content-Type': 'application/json' });
               res.end(JSON.stringify(createdProduct));
             } catch (error) {
